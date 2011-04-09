@@ -8,11 +8,11 @@ Installation
 
 First, you need to add the MailChimp library in your project:
 
-    $ git add submodule git://github.com/switzer/mailchimp.git vendor/mailchimp
+    $ git submodule add git://github.com/switzer/mailchimp.git vendor/mailchimp
 
 And the bundle:
 
-    $ git add submodule git://github.com/jirafe/MailChimpBundle.git vendor/bundles/Jirafe/Bundle/MailChimpBundle
+    $ git submodule add git://github.com/jirafe/MailChimpBundle.git vendor/bundles/Jirafe/Bundle/MailChimpBundle
 
 Then, add it to the autoloader:
 
@@ -21,7 +21,7 @@ Then, add it to the autoloader:
 
         // ... other namespaces
 
-        'Jirafe'                         => __DIR__ . '/../src',
+        'Jirafe'                         => __DIR__ . '/../vendor/bundles',
         'Mailchimp'                      => __DIR__ . '/../vendor/mailchimp/src',
     ));
 
