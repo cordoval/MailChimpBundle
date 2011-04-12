@@ -11,7 +11,8 @@
 
 namespace Jirafe\Bundle\MailChimpBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
@@ -21,7 +22,7 @@ class JirafeMailChimpExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function load(array $configs, ContainerBuilder $builder)
+    public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('mail_chimp.xml');
@@ -32,17 +33,10 @@ class JirafeMailChimpExtension extends Extension
             throw new \Exception('You must define the \'api_key\' parameter in the \'jirafe_mail_chimp\' configuration section.');
         }
 
-        $builder->setParameter('mail_chimp.api.key', $config['api_key']);
+        $container->setParameter('mail_chimp.api_key', $config['api_key']);
 
-        if (isset($config['secure'])) {
-            $builder->getDefinition('mail_chimp.api');
-            $builder->setParameter(1, $config['secure']);
-        }
-
-        if (isset($config['timeout'])) {
-            $builder->getDefinition('mail_chimp.api');
-            $builder->addMethodCall('setTimeout', array($config['timeout']));
-        }
+        $definition = $container->getDefinition('mail_chimp.client');
+        $definition->addArgument(new Reference(sprintf('mail_chimp.connection.%s', $config['connection'])));
     }
 
     /**
@@ -54,7 +48,8 @@ class JirafeMailChimpExtension extends Extension
      */
     public function mergeConfigs(array $configs)
     {
-        $merged = array();
+        $merged = array('connection' => 'http');
+
         foreach ($configs as $config) {
             if (isset($config['api-key'])) {
                 $merged['api_key'] = $config['api-key'];
@@ -62,12 +57,8 @@ class JirafeMailChimpExtension extends Extension
                 $merged['api_key'] = $config['api_key'];
             }
 
-            if (isset($config['secure'])) {
-                $merged['secure'] = true === $config['secure'] ? true : false;
-            }
-
-            if (isset($config['timeout'])) {
-                $merged['timeout'] = intval($merged['timeout']);
+            if (isset($config['connection'])) {
+                $merged['connection'] = $config['connection'];
             }
         }
 

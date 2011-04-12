@@ -41,9 +41,8 @@ Finally, configure it:
     # app/config/config.yml
     # MailChimp Configuration
     jirafe_mail_chimp:
-        api_key:    yourSecretKey   # your api key providen by MailChimp
-        secret:     false           # whether to use the secret mode (optional)
-        timeout:    10              # timeout in seconds (optional)
+        api_key:    yourSecretKey   # your api key
+        connection: http            # must be "http", "https" or "stub" (default "http")
 
 Usage
 -----
@@ -54,7 +53,7 @@ In your controller, you can easily access the MailChimp api:
 
     public function foobarAction()
     {
-        $mailChimp = $this->get('mail_chimp.api');
+        $mailChimp = $this->get('mail_chimp.client');
 
         $mailChimp->campaignUnschedule($cid);
     }

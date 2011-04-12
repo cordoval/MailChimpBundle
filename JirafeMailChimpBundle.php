@@ -11,7 +11,7 @@
 
 namespace Jirafe\Bundle\MailChimpBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class JirafeMailChimpBundle extends Bundle
 {
